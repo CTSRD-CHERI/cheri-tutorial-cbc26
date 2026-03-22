@@ -1,7 +1,7 @@
 {
 	"compartments": {
-		"compute": {
-			"symbols": [ "f" ]
+		"stack-safety": {
+			"symbols": [ "main", "overwrite" ]
 		}
 	}
 }

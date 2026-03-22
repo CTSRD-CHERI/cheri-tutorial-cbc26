@@ -1,17 +1,19 @@
-CC=		cc
+CC?=		cc
 CFLAGS=		-g -O0
+VARIANTS?=	baseline cheri
 CFLAGS_BASELINE=-mabi=aapcs
 CFLAGS_CHERI=
+POLICY?=
 
 SRCS+=		${PROG}.c
 
-.for variant in baseline cheri
+.for variant in ${VARIANTS}
 CLEANFILES+=	${PROG}-${variant}
 
 all: ${PROG}-${variant}
 
-${PROG}-${variant}: ${SRCS}
-	${CC} -o ${.TARGET} ${.ALLSRC} ${CFLAGS} ${CFLAGS_${variant:tu}}
+${PROG}-${variant}: ${SRCS} ${POLICY}
+	${CC} -o ${.TARGET} ${SRCS} ${CFLAGS} ${CFLAGS_${variant:tu}}
 .endfor
 
 clean:

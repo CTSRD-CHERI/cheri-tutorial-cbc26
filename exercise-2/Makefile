@@ -1,13 +1,17 @@
-CC=/usr/local64/llvm-morello-c18n/bin/clang
-CFLAGS=-ffunction-sections
-CFLAGS+=-target aarch64-unknown-freebsd15.0 -march=morello -mabi=purecap
-CFLAGS+=-cheri-codeptr-relocs -Xclang -morello-vararg=new -Xclang -morello-bounded-memargs
+CC=	clang-morello-c18n
+PROG=	stack-safety
 
-all: main.c policy.txt
-	${CC} ${CFLAGS} -g main.c -o normal -Wl,--compartment-policy=policy.txt
-	cp normal compart
-	elfctl -e +nocheric18n ./normal
-	elfctl -e +cheric18n ./compart
+VARIANTS=cheri cheric18n
+CFLAGS_CHERIC18N=-ffunction-sections -Wl,--compartment-policy=policy.txt
 
-clean:
-	rm -f normal compart *.core
+POLICY=	policy.txt
+
+all: ${PROG}-cheri-elfctl ${PROG}-cheric18n-elfctl
+
+${PROG}-cheri-elfctl: ${PROG}-cheri
+	elfctl -e +nocheric18n ${PROG}-cheri
+
+${PROG}-cheric18n-elfctl: ${PROG}-cheric18n
+	elfctl -e +cheric18n ${PROG}-cheric18n
+
+.include "../common.mk"
