@@ -52,6 +52,8 @@ struct alloc_storage {
 struct alloc_storage alloc_array[ALLOC_MAX];	/* Underlying storage. */
 struct alloc_storage *alloc_nextfree;		/* Next available memory. */
 
+typedef uintptr_t ptroff_t;
+
 /*
  * Initialise the free list, pointing alloc_nextfree at the array, and then
  * chaining array entries into the list.
@@ -87,6 +89,13 @@ alloc_allocate(void)
 	return (alloc->a_bytes);
 };
 
+static void
+alloc_invalidate_ptr(void *ptr, ptroff_t off)
+{
+
+	memset((void *)(off + (uintptr_t)ptr), 'A', sizeof(void *));
+}
+
 /*
  * Free memory, inserting it back into the free list.  Note use of
  * __containerof() to convert pointer to a_bytes back into the container
@@ -96,9 +105,11 @@ static void
 alloc_free(void *ptr)
 {
 	struct alloc_storage *alloc;
+	long baseaddr;
 
 	/* Convert pointer to allocated memory into pointer to metadata. */
-	alloc = __containerof(ptr, struct alloc_storage, a_bytes);
+	baseaddr = (uintptr_t)ptr - __offsetof(struct alloc_storage, a_bytes);
+	alloc = (struct alloc_storage *)baseaddr;
 	alloc->a_next = alloc_nextfree;
 	alloc_nextfree = alloc;
 }
@@ -122,14 +133,20 @@ main(void)
 	/*
 	 * Run off the end of the memory allocation, corrupting the next
 	 * allocation's metadata.  Free when done.
+	 *
+	 * Disable this code with #if 0 after fixing the allocator.
 	 */
+#if 1
 	printf("Preparing to overflow %p\n", ptr1);
-	memset(ptr1 + ALLOC_SIZE, 'A', sizeof(void *));
+	/*
+	 * NOTE: This call writing outside the allocation's bounds should crash.
+	 */
+	alloc_invalidate_ptr(ptr1, ALLOC_SIZE);
 	printf("Overflowed allocation %p\n", ptr1);
-
 	printf("Freeing allocation %p\n", ptr1);
 	alloc_free(ptr1);
 	printf("Allocation %p freed\n", ptr1);
+#endif
 
 	/*
 	 * Perform three sequential allocations to cause the allocator to
