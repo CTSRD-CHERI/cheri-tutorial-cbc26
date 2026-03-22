@@ -1,10 +1,10 @@
 CC=	clang-morello-c18n
 PROG=	stack-safety
 
-VARIANTS=cheri cheric18n
-CFLAGS_CHERIC18N=-ffunction-sections -Wl,--compartment-policy=policy.txt
-
 POLICY=	policy.txt
+
+VARIANTS=cheri cheric18n
+CFLAGS_CHERIC18N=-ffunction-sections -Wl,--compartment-policy=${POLICY}
 
 all: ${PROG}-cheri-elfctl ${PROG}-cheric18n-elfctl
 

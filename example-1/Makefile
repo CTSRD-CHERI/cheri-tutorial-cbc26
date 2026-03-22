@@ -1,3 +1,3 @@
 PROG=	buffer-overflow-global
 
-.include "../../common.mk"
+.include "../common.mk"
