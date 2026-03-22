@@ -28,7 +28,6 @@
 char buffer[128];
 char c;
 
-#pragma weak fill_buf
 void
 fill_buf(char *buf, size_t len)
 {
