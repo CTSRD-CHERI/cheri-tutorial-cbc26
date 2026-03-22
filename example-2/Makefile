@@ -1,3 +1,3 @@
-PROG=	compiler-warnings
+PROG=	use-after-free
 
-.include "../common.mk"
+.include "../../common.mk"

@@ -1,63 +1,26 @@
-# Exercise: Adapt a C Program to CHERI C
+# Stack Corruption Mitigation Exercise
 
-This exercise presents an example C program that includes capability-related
-issues that might appear as bugs in software initially developed for non-CHERI
-architectures. The example C program is `cat(1)` from CheriBSD (and hence
-FreeBSD) modified to introduce the issues that we want to investigate.
+## Roadmap
 
-1. Compile the program for CheriABI and the hybrid ABI, and save the compiler
-   output to analyse it later
+* Compile a program vulnerable to stack corruption
+  * Demonstrate the vulnerability
+* Run the same program with linkage-based compartmentalisation
+  * Show that the vulnerability is mitigated
+* Use `gdb` to understand why the vulnerability is mitigated
+  * Backtrace: `bt`
+  * List compartments: `info compartments`
 
-   ```
-   make
-   ```
+## Instructions
 
-3. Run the cat program for both ABIs with an arbitrary file, e.g.:
+1. Make sure you are using a toolchain that supports compartmentalisation policies.
+1. Run `make all` to build two versions of the vulnerable program---one normal and one compartmentalised.
+2. Run the normal version with `./normal`.
+   * What stack addresses do you see? Can you reach one from the other?
+   * Can you successfully corrupt data in the caller's frame from the callee?
+3. Run the compartmentalised version with `./compart`.
+   * What stack addresses do you see? Can you reach one from the other?
+   * It is impossible to corrupt data in the caller's frame from the callee. Why?
 
-   ```
-   ./cat-baseline /etc/resolv.conf
-   ```
+## References
 
-   ```
-   ./cat-cheri /etc/resolv.conf
-   ```
-
-4. Analyse the ambiguous provenance issue reported by the compiler and
-   try to fix it
-
-   * The `write(2)` system call expects a valid pointer in its second argument
-
-   * Run the program with CHERI GDB and a breakpoint set for the `write` symbol.
-     Once CHERI GDB hits the breakpoint, you can use the `backtrace` GDB
-     command to see what function calls `write(2)`.
-     You can do this by entering GDB: `gdb ./cat-cheri`
-     Then once inside set the breakpoint using: `break methods.c:70`
-     Finally run our vulnerable code: `run /etc/resolv.conf`
-
-   * What is the value of the `buf` argument and why?
-
-   * After fixing the issue, repeat the CHERI GDB session to see what value
-     the second `write(2)` system call argument has now
-
-5. Run the cat program in the verbose mode (`-n`) for both ABIs with
-   an arbitrary file, e.g.:
-
-   ```
-   ./cat-baseline -n /etc/resolv.conf
-   ```
-
-   ```
-   ./cat-cheri -n /etc/resolv.conf
-   ```
-
-6. Analyse the loss of provenance issue reported by the compiler and try to fix
-   it
-
-   * The `getc()` is a macro that expects a valid `FILE` pointer
-
-     The macro accesses fields of a `FILE` object.
-
-   * Run the program with GDB to repeat the crash. Again, use the `backtrace`
-     GDB command to see what is the crash context
-
-   * What is the value of the `fp` argument and why?
+CheriBSD manual: [`c18n(7)`](https://man.cheribsd.org/cgi-bin/man.cgi/c18n)

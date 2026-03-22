@@ -1,17 +1,19 @@
-# HiPEAC 2026 CHERI tutorial
+# CHERI Blossoms 2026: Hands-on Introduction to CHERI and CHERIoT tutorial
 
 This repository is available and can be viewed to render Markdown files at:
 
-https://github.com/CTSRD-CHERI/cheri-tutorial-hipeac26
+https://github.com/CTSRD-CHERI/cheri-tutorial-cbc26
 
-The repository includes two examples and three exercises on:
+The repository includes three examples and two exercises on:
 
-* Memory safety ([example-1](example-1); [exercise-1](exercise-2))
+* Spatial safety ([example-1](example-1); [exercise-1](exercise-1))
 
-* Software adaptability to CHERI ([example-2](example-2);
-  [exercise-2](exercise-2))
+* Temporal safety ([example-2](example-2); [exercise-1](exercise-1))
 
-* Library-based compartmentalization ([exercise-3](exercise-3))
+* Software adaptability to CHERI ([example-2](example-3);
+  [exercise-1](exercise-1))
+
+* Linkage-based compartmentalization ([exercise-2](exercise-2))
 
 In order to run an example or attempt to solve an exercise, simply go to its
 directory and read a README file in it.
