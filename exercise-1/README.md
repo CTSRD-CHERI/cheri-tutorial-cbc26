@@ -96,4 +96,3 @@ by the allocator, that the pointer is in bounds, and that it points to the
 start of a current allocation.
 Further temporal safety also requires quarantining freed memory until all
 pointers to it have been revoked.
-
