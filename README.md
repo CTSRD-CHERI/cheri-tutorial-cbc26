@@ -10,7 +10,7 @@ The repository includes three examples and two exercises on:
 
 * Temporal safety ([example-2](example-2); [exercise-1](exercise-1))
 
-* Software adaptability to CHERI ([example-2](example-3);
+* Software adaptability to CHERI ([example-3](example-3);
   [exercise-1](exercise-1))
 
 * Linkage-based compartmentalization ([exercise-2](exercise-2))
